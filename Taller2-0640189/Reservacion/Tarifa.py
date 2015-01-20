@@ -4,7 +4,7 @@ Created on 19/1/2015
 @author: ZurdoRod
 '''
 
-class Tarifa(object):
+class Tarifas(object):
 
     tarifaDiurna = 0
     tarifaNocturna = 0
