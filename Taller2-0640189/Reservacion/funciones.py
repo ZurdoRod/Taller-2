@@ -30,8 +30,46 @@ def aumentarDia (fechaIn):
         return fechaIn.replace(month = mes + 1, day = 1)
         
 def calcularDia (fechaIn, fechaOut, fechaDia, tarifa, acum):
-    return 0    #FALTA
-        
+    t = 0
+    fechaDiurno = fechaIn.replace(hour = 6, minute = 0)
+    fechaNocturno = fechaIn.replace(hour = 18, minute = 0)
+    if fechaIn < fechaDiurno and fechaOut < fechaDiurno:
+        t = (fechaOut.time().hour - fechaIn.time().hour) * tarifa.tn
+        if fechaOut.time().minute > fechaIn.time().minute and fechaOut.time().hour < 5:
+            t = t + tarifa.tn
+        elif fechaOut.time().minute > fechaIn.time().minute and fechaOut.time().hour == 5:
+            t = t + tarifa.ti
+        return acum + t
+    elif fechaIn >= fechaDiurno and fechaIn < fechaNocturno and fechaOut >= fechaDiurno and fechaOut < fechaNocturno:
+        t = (fechaOut.time().hour - fechaIn.time().hour) * tarifa.td
+        if fechaOut.time().minute > fechaIn.time().minute and fechaOut.time().hour < 17:
+            t = t + tarifa.td
+        elif fechaOut.time().minute > fechaIn.time().minute and fechaOut.time().hour == 17:
+            t = t + tarifa.ti
+        return acum + t
+    elif fechaIn >= fechaNocturno and fechaOut < aumentarDia(fechaNocturno):
+        t = fechaOut.time().hour - fechaIn.time().hour
+        if t < 0:
+            t = t + 24
+        t = t * tarifa.tn
+        if fechaOut.time().minute > fechaIn.time().minute and fechaOut.time().hour < 5:
+            t = t + tarifa.tn
+        elif fechaOut.time().minute > fechaIn.time().minute and fechaOut.time().hour == 5:
+            t = t + tarifa.ti
+        elif fechaOut.time().minute > fechaIn.time().minute and fechaOut.time().hour < 24:
+            t = t + tarifa.tn
+        return acum + t
+    elif fechaIn < fechaDiurno and fechaOut < fechaNocturno:
+        return acum + calcularDia(fechaIn, fechaDiurno.replace(hour = 5, minute = fechaIn.time().minute), None, tarifa, 0) + calcularDia (fechaDiurno.replace(minute = fechaIn.time().minute), fechaOut, None, tarifa, 0) + tarifa.ti 
+    elif fechaIn < fechaDiurno and fechaOut < aumentarDia(fechaDiurno):
+        return acum + calcularDia(fechaIn, fechaDiurno.replace(hour = 5, minute = fechaIn.time().minute), None, tarifa, 0) + calcularDia (fechaDiurno.replace(minute = fechaIn.time().minute), fechaNocturno.replace(hour = 17, minute = fechaIn.time().minute), None, tarifa, 0) + calcularDia (fechaNocturno, fechaOut, aumentarDia(fechaOut), tarifa, 0) + 2*tarifa.ti
+    elif fechaIn < fechaNocturno and fechaOut < aumentarDia(fechaDiurno):
+        return acum + calcularDia(fechaIn, fechaNocturno.replace(hour = 17, minute = fechaIn.time().minute), None, tarifa, 0) + calcularDia (fechaNocturno.replace(minute = fechaIn.time().minute), fechaOut, None, tarifa, 0) + tarifa.ti
+    elif fechaIn < fechaDiurno and fechaOut <  fechaDia:
+        return acum + calcularDia(fechaDiurno, fechaDiurno.replace(hour = 5, minute = fechaIn.time().minute), None, tarifa, 0) + calcularDia (fechaDiurno.replace(minute = fechaIn.time().minute), fechaNocturno.replace(hour = 17, minute = fechaIn.time().minute), None, tarifa, 0) + (fechaNocturno.replace(minute = fechaIn.time().minute), fechaOut, None, tarifa, 0) + 2*tarifa.ti
+    elif fechaOut > fechaDia:
+        return acum + calcularDia(fechaIn, fechaDia, fechaDia, tarifa, 0) + calcularDia(fechaDia, fechaOut, aumentarDia(fechaDia), tarifa, 0)
+    return 0
     
 
 def calcularCosto (fechaIn, fechaOut, tarifa):
