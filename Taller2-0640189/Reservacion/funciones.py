@@ -1,7 +1,7 @@
 '''
 Created on 19/1/2015
 
-@author: Carlos_Rodriguez
+@author: Carlos_Rodriguez_06-40189
 '''
 from datetime import datetime
 from Reservacion import Tarifa

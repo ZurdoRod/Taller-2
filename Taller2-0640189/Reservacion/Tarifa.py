@@ -1,7 +1,7 @@
 '''
 Created on 19/1/2015
 
-@author: ZurdoRod
+@author: Carlos_Rodriguez_06-40189
 '''
 class Tarifas(object):
 
