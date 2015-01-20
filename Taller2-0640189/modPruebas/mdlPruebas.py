@@ -8,6 +8,10 @@ from datetime import datetime
 from Reservacion import funciones
 
 class Test(unittest.TestCase):
+    
+    '''
+        NOTA: Las pruebas estan en orden inverso.
+    '''
 
     def test20 (self):
         self.assertEqual(530, funciones.reservacion('31-1-2014 2:10', '1-2-2014 12:10', 10.0, 20.0), 'mas de un dia con cambio de mes')
